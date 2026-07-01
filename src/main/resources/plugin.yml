@@ -1,0 +1,42 @@
+name: TownyElections
+version: '${project.version}'
+main: com.townyelections.TownyElections
+api-version: '1.21'
+author: TownyElections
+description: A formal, configurable election system for Towny towns.
+website: https://github.com/TownyAdvanced/Towny
+
+depend:
+  - Towny
+softdepend:
+  - PlaceholderAPI
+
+commands:
+  election:
+    description: Root command for the TownyElections plugin.
+    usage: /election help
+    aliases:
+      - elec
+      - te
+
+permissions:
+  townyelections.*:
+    description: Grants all TownyElections permissions.
+    default: op
+    children:
+      townyelections.candidate: true
+      townyelections.vote: true
+      townyelections.info: true
+      townyelections.admin: true
+  townyelections.candidate:
+    description: Allows a resident to run for election and manage their campaign.
+    default: true
+  townyelections.vote:
+    description: Allows a resident to cast a vote in an election.
+    default: true
+  townyelections.info:
+    description: Allows viewing election status, candidates and results.
+    default: true
+  townyelections.admin:
+    description: Allows administrative control over elections (start, stop, cancel, reload).
+    default: op

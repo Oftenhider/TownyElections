@@ -1,0 +1,164 @@
+# ============================================================================
+#  TownyElections - Configuration
+# ============================================================================
+#  A formal, configurable election system for Towny towns.
+#  Documentation & support: see README.md
+# ============================================================================
+
+# Do not edit. Used internally to migrate the config on updates.
+config-version: 1
+
+# General plugin settings.
+general:
+  # Locale for the messages file (messages_<locale>.yml). Defaults to "en".
+  locale: "en"
+  # If true, extra debug information is logged to the console.
+  debug: false
+  # Enable anonymous usage statistics via bStats (https://bstats.org).
+  metrics: true
+
+# ----------------------------------------------------------------------------
+#  Election settings
+# ----------------------------------------------------------------------------
+election:
+  # How long the *nomination/campaign* phase lasts, during which residents may
+  # register as candidates. Accepts a duration such as: 30s, 10m, 2h, 3d, 1w.
+  nomination-duration: "2d"
+
+  # How long the *voting* phase lasts once nominations close.
+  voting-duration: "3d"
+
+  # Minimum number of candidates required for an election to proceed to voting.
+  # If fewer candidates register, the election is cancelled (or auto-wins, see
+  # "auto-win-single-candidate").
+  min-candidates: 2
+
+  # Maximum number of candidates permitted per election. 0 = unlimited.
+  max-candidates: 0
+
+  # If only a single candidate registers and min-candidates would otherwise
+  # fail, should that candidate automatically win?
+  auto-win-single-candidate: true
+
+  # Minimum number of residents a town must have before an election may run.
+  min-town-residents: 2
+
+  # Each resident may cast this many votes per election (usually 1).
+  votes-per-resident: 1
+
+  # If true, players may change their vote while the voting phase is open.
+  allow-vote-changes: true
+
+  # If true, residents can see live vote tallies during voting. If false, tallies
+  # are hidden until the election concludes (secret ballot).
+  public-live-results: false
+
+  # May candidates vote for themselves?
+  allow-self-vote: true
+
+  # Tie-breaking strategy when the top candidates are tied:
+  #   RANDOM         - pick a random winner from the tied candidates
+  #   EARLIEST       - the candidate who registered first wins
+  #   INCUMBENT      - the current mayor wins if tied, else RANDOM
+  #   RUNOFF         - start a new short voting round between the tied candidates
+  #   NONE           - declare no winner (election voided)
+  tie-breaker: "INCUMBENT"
+
+  # Duration of a runoff voting round (only used when tie-breaker is RUNOFF).
+  runoff-duration: "1d"
+
+  # Automatically start a new election in every eligible town on a fixed cadence.
+  # Set enabled to false to only run elections started manually via commands.
+  auto-schedule:
+    enabled: false
+    # Cadence between the *end* of one election and the automatic start of the
+    # next (per town). Example: 30d for a monthly cycle.
+    interval: "30d"
+
+  # If true, the town's economy account is charged/rewards handled (requires an
+  # economy). Purely optional flavour.
+  economy:
+    # Cost for a resident to register as a candidate. 0 = free.
+    candidacy-cost: 0.0
+    # Reward paid to the winner from nowhere (0 = disabled).
+    winner-reward: 0.0
+
+# ----------------------------------------------------------------------------
+#  Campaign settings
+# ----------------------------------------------------------------------------
+campaign:
+  # Maximum length (characters) of a candidate's campaign message.
+  max-message-length: 128
+  # Default campaign message used when a candidate sets none.
+  default-message: "I would be honored to serve this town."
+  # A simple denylist. Campaign messages containing any of these (case
+  # insensitive) substrings are rejected.
+  blocked-words:
+    - "slur1"
+    - "slur2"
+
+# ----------------------------------------------------------------------------
+#  Winner rewards - what the elected candidate receives
+# ----------------------------------------------------------------------------
+# When an election concludes, the winner is granted the configured Towny town
+# ranks and (optionally) is made mayor. Ranks must exist in Towny's
+# townyperms.yml (defaults include: helper, councillor, sheriff, treasurer, etc.
+# and custom ranks you define). Invalid ranks are skipped with a console warning.
+winner:
+  # Make the winning candidate the town's Mayor. This transfers mayorship.
+  set-as-mayor: false
+
+  # Towny town ranks to grant the winner. These map to permission nodes defined
+  # in Towny's townyperms.yml (e.g. plot management). Add or remove as desired.
+  grant-town-ranks:
+    - "councillor"
+    - "helper"
+
+  # If true, ranks granted by a previous election win are removed from the
+  # outgoing office holder(s) when a new winner takes office.
+  revoke-previous-winner-ranks: true
+
+  # Extra vanilla/Bukkit console commands to run when a winner is decided.
+  # Placeholders: {winner} {winner_uuid} {town} {votes} {total_votes}
+  # Runs from console. Great for LuckPerms, broadcasts, giving items, etc.
+  commands-on-win:
+    - "townyadmin reload"  # example placeholder - safe to remove
+  # Uncomment examples:
+  #   - "lp user {winner} parent addtemp mayor 30d"
+  #   - "give {winner} minecraft:golden_helmet 1"
+
+  # Commands run for each *losing* candidate when the election concludes.
+  # Placeholders: {loser} {loser_uuid} {town} {votes}
+  commands-on-loss: []
+
+# ----------------------------------------------------------------------------
+#  Command customization
+# ----------------------------------------------------------------------------
+# Rename the sub-commands of /election to whatever suits your server. The keys
+# are the internal actions; the values are the literals players type.
+commands:
+  run: "run"          # register as a candidate
+  withdraw: "withdraw"  # drop out of the race
+  campaign: "campaign"  # set your campaign message
+  vote: "vote"          # cast a vote
+  status: "status"      # view current election status
+  candidates: "candidates"  # list candidates
+  results: "results"    # view results of the last concluded election
+  start: "start"        # (admin) start an election
+  stop: "stop"          # (admin) end voting early and tally
+  cancel: "cancel"      # (admin) cancel an election with no winner
+  reload: "reload"      # (admin) reload configuration
+  help: "help"
+
+# ----------------------------------------------------------------------------
+#  Notifications
+# ----------------------------------------------------------------------------
+notifications:
+  # Broadcast election start/end to the whole server (in addition to the town).
+  broadcast-server-wide: false
+  # Remind voters who have not yet voted, this long before voting ends.
+  # Set to "0" to disable reminders.
+  voting-reminder-before-end: "6h"
+  # Notify residents when they log in if there is an active election they can
+  # participate in.
+  notify-on-join: true

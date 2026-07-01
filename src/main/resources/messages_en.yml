@@ -1,0 +1,107 @@
+# TownyElections - message file (locale: en)
+# Supports legacy '&' colour codes and hex '&#RRGGBB'.
+# Available placeholders vary per message; common ones are shown inline.
+
+prefix: "&8[&bElections&8]&r "
+
+general:
+  no-permission: "&cYou do not have permission to do that."
+  players-only: "&cThis command can only be used by players."
+  not-a-resident: "&cYou are not a registered Towny resident."
+  no-town: "&cYou must belong to a town to do that."
+  reloaded: "&aConfiguration reloaded successfully."
+  unknown-command: "&cUnknown sub-command. Use &f/{label} {help}&c."
+  invalid-number: "&cThat is not a valid number."
+
+election:
+  none-active: "&cThere is no active election in your town."
+  already-active: "&cThere is already an active election in &f{town}&c."
+  started-nomination: "&aAn election has begun in &f{town}&a! Nominations are open for &e{duration}&a. Use &f/{label} {run}&a to stand as a candidate."
+  nominations-closed-voting-open: "&aNominations are closed. Voting is now open for &e{duration}&a in &f{town}&a. Use &f/{label} {vote} <candidate>&a."
+  cancelled: "&cThe election in &f{town}&c has been cancelled. No winner was declared."
+  cancelled-not-enough-candidates: "&cThe election in &f{town}&c was cancelled: only &e{count}&c candidate(s) registered (minimum &e{min}&c)."
+  concluded: "&aThe election in &f{town}&a has concluded!"
+  town-too-small: "&cThis town needs at least &e{min}&c residents to hold an election."
+  time-remaining-nomination: "&7Nominations close in &f{time}&7."
+  time-remaining-voting: "&7Voting closes in &f{time}&7."
+  phase-nomination: "&eNOMINATIONS"
+  phase-voting: "&aVOTING"
+  phase-runoff: "&6RUNOFF"
+
+candidate:
+  registered: "&aYou are now a candidate in the &f{town}&a election. Good luck!"
+  already-registered: "&cYou are already a candidate in this election."
+  withdrawn: "&eYou have withdrawn from the &f{town}&e election."
+  not-a-candidate: "&cYou are not a candidate in the current election."
+  registration-closed: "&cCandidate registration is closed; the nomination phase has ended."
+  max-reached: "&cThe maximum number of candidates (&e{max}&c) has been reached."
+  cost-charged: "&7A candidacy fee of &f{cost}&7 was charged."
+  cannot-afford: "&cYou cannot afford the candidacy fee of &f{cost}&c."
+  self-registered-broadcast: "&e{player}&7 has entered the race for &f{town}&7!"
+
+campaign:
+  set: "&aYour campaign message has been set."
+  too-long: "&cYour campaign message is too long (max &e{max}&c characters)."
+  blocked: "&cYour campaign message contains disallowed content."
+  empty: "&cUsage: &f/{label} {campaign} <message>"
+  header: "&8&m----&r &bCampaign: &f{candidate} &8&m----"
+  body: "&7{message}"
+
+vote:
+  cast: "&aYou voted for &f{candidate}&a."
+  changed: "&aYou changed your vote to &f{candidate}&a."
+  already-voted: "&cYou have already voted. Vote changing is disabled."
+  not-open: "&cVoting is not currently open."
+  no-such-candidate: "&cThere is no candidate named &f{name}&c in this election."
+  cannot-self-vote: "&cYou may not vote for yourself."
+  usage: "&cUsage: &f/{label} {vote} <candidate>"
+  not-eligible: "&cOnly residents of &f{town}&c may vote in this election."
+  reminder: "&eVoting in &f{town}&e closes in &f{time}&e and you have not voted yet! Use &f/{label} {vote} <candidate>&e."
+
+results:
+  header: "&8&m-----&r &bElection Results &8- &f{town} &8&m-----"
+  line: "&7 {rank}. &f{candidate} &8- &e{votes}&7 vote(s) &8(&7{percent}%&8)"
+  winner: "&a&lWinner: &f{winner}&a with &e{votes}&a vote(s)!"
+  no-winner: "&cNo winner was declared."
+  total-votes: "&7Total votes cast: &f{total}"
+  turnout: "&7Turnout: &f{voters}&7/&f{residents} &7residents (&f{percent}%&7)"
+  none-recorded: "&cNo previous election results are recorded for this town."
+  tie-runoff: "&6A tie occurred. A runoff has begun between: &f{candidates}"
+
+winner:
+  made-mayor: "&a{winner} has been appointed Mayor of {town}."
+  ranks-granted: "&a{winner} has been granted the rank(s): &f{ranks}&a."
+  announce-town: "&6&l{winner}&e has won the election and now leads &f{town}&e!"
+  announce-server: "&6&l{winner}&e has been elected in &f{town}&e!"
+
+status:
+  header: "&8&m-----&r &bElection Status &8- &f{town} &8&m-----"
+  phase: "&7Phase: &f{phase}"
+  candidates-count: "&7Candidates: &f{count}"
+  votes-count: "&7Votes cast: &f{votes}"
+  your-vote: "&7Your vote: &f{choice}"
+  your-vote-none: "&7Your vote: &8(none)"
+  candidate-list-header: "&7Candidates (use &f/{label} {vote} <name>&7):"
+  candidate-entry: "&8 - &f{candidate} &8(&e{votes} votes&8) &7{message}"
+  candidate-entry-hidden: "&8 - &f{candidate} &7{message}"
+
+admin:
+  started: "&aYou started an election in &f{town}&a."
+  stopped: "&aYou ended voting early in &f{town}&a; results are being tallied."
+  cancelled: "&aYou cancelled the election in &f{town}&a."
+  no-active-to-stop: "&cThere is no active election to stop in &f{town}&c."
+  town-not-found: "&cNo town named &f{town}&c was found."
+
+help:
+  header: "&8&m-----&r &bTownyElections Help &8&m-----"
+  run: "&f/{label} {run} &8- &7Stand as a candidate."
+  withdraw: "&f/{label} {withdraw} &8- &7Withdraw from the race."
+  campaign: "&f/{label} {campaign} <message> &8- &7Set your campaign message."
+  vote: "&f/{label} {vote} <candidate> &8- &7Cast your vote."
+  status: "&f/{label} {status} &8- &7View the current election."
+  candidates: "&f/{label} {candidates} &8- &7List candidates."
+  results: "&f/{label} {results} &8- &7View the last results."
+  start: "&f/{label} {start} [town] &8- &7(Admin) Start an election."
+  stop: "&f/{label} {stop} [town] &8- &7(Admin) End voting & tally."
+  cancel: "&f/{label} {cancel} [town] &8- &7(Admin) Cancel the election."
+  reload: "&f/{label} {reload} &8- &7(Admin) Reload the config."
