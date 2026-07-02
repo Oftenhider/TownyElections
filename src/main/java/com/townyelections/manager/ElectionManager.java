@@ -166,6 +166,32 @@ public class ElectionManager {
         return OperationResult.ok("party.left");
     }
 
+    public OperationResult renameParty(Town town, String oldName, String newName) {
+        Election election = active.get(town.getUUID());
+        if (election == null) {
+            return OperationResult.fail("election.none-active");
+        }
+        if (oldName == null || oldName.isBlank() || newName == null || newName.isBlank()) {
+            return OperationResult.fail("party.rename-usage");
+        }
+        String trimmedNew = newName.trim();
+        if (trimmedNew.length() > config.getMaxPartyNameLength()) {
+            return OperationResult.fail("party.too-long");
+        }
+        int renamed = 0;
+        for (Candidate candidate : election.getCandidateList()) {
+            if (candidate.getPartyName().equalsIgnoreCase(oldName.trim())) {
+                candidate.setPartyName(trimmedNew);
+                renamed++;
+            }
+        }
+        if (renamed == 0) {
+            return OperationResult.fail("party.no-such-party");
+        }
+        save();
+        return OperationResult.ok("party.renamed");
+    }
+
     public OperationResult setPartyName(Resident resident, Town town, String partyName) {
         Election election = active.get(town.getUUID());
         if (election == null) {

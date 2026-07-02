@@ -162,6 +162,18 @@ public class ElectionCommand implements CommandExecutor, TabCompleter {
     }
 
     private void handleParty(CommandSender sender, String[] rest, String label) {
+        if (rest.length > 0 && rest[0].equalsIgnoreCase("rename")) {
+            if (!sender.hasPermission("townyelections.admin")) {
+                messages.send(sender, "general.no-permission");
+                return;
+            }
+            PlayerContext ctx = resolveContext(sender);
+            if (ctx == null) {
+                return;
+            }
+            handlePartyRename(sender, ctx, rest, label);
+            return;
+        }
         if (!sender.hasPermission("townyelections.candidate")) {
             messages.send(sender, "general.no-permission");
             return;
@@ -193,6 +205,29 @@ public class ElectionCommand implements CommandExecutor, TabCompleter {
                 MessageManager.placeholders(
                         "party", partyName.trim(),
                         "max", String.valueOf(config.getMaxPartyNameLength())));
+    }
+
+    private void handlePartyRename(CommandSender sender, PlayerContext ctx, String[] rest, String label) {
+        if (!sender.hasPermission("townyelections.admin")) {
+            messages.send(sender, "general.no-permission");
+            return;
+        }
+        if (rest.length < 3) {
+            messages.send(sender, "party.rename-usage", MessageManager.placeholders(
+                    "label", label, "party", commands.literal(CommandConfig.PARTY)));
+            return;
+        }
+        String oldName = rest[1];
+        String newName = String.join(" ", Arrays.copyOfRange(rest, 2, rest.length));
+        if (oldName.isBlank() || newName.isBlank()) {
+            messages.send(sender, "party.rename-usage", MessageManager.placeholders(
+                    "label", label, "party", commands.literal(CommandConfig.PARTY)));
+            return;
+        }
+        respond(sender, elections.renameParty(ctx.town(), oldName, newName), MessageManager.placeholders(
+                "old", oldName,
+                "new", newName.trim(),
+                "max", String.valueOf(config.getMaxPartyNameLength())));
     }
 
     // ---- Voting ------------------------------------------------------------
