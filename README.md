@@ -93,6 +93,28 @@ literal below is **configurable** in `config.yml` under the `commands:` section.
 
 Admins may target another town by name; otherwise the sender's own town is used.
 
+### Political parties
+
+Parties are active-election labels that candidates can join, create, leave, or
+admin-rename without changing the core individual-winner election rules.
+
+```text
+/election party Reform Coalition      # join or create a party
+/election party leave                 # return to the default party
+/election parties                     # list current parties and standings
+/election party rename Reform Unity   # admin: rename a party in this election
+```
+
+Candidate lists and final results show each candidate's party. Party standings
+show candidate counts, and show vote totals whenever live results are public or
+after results are recorded. Example result output:
+
+```text
+Party Results - Oakvale
+ - Reform Coalition (18 votes, 2 candidates) Alex, Mira
+ - Independent (7 votes, 1 candidate) Rowan
+```
+
 ### Permissions
 
 | Node                        | Default | Grants                               |
