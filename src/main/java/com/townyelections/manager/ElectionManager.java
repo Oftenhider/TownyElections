@@ -18,6 +18,8 @@ import org.bukkit.configuration.file.YamlConfiguration;
 import java.io.File;
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.Comparator;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Locale;
 import java.util.Map;
@@ -481,6 +483,13 @@ public class ElectionManager {
         broadcastTown(town, "election.concluded",
                 MessageManager.placeholders("town", town.getName()));
 
+        PartyStanding leadingParty = leadingParty(election, tally);
+        if (leadingParty != null) {
+            broadcastTown(town, "results.leading-party", MessageManager.placeholders(
+                    "party", leadingParty.name(),
+                    "votes", String.valueOf(leadingParty.votes())));
+        }
+
         if (winnerCandidate != null) {
             applyWinnerRewards(town, winnerCandidate, winnerVotes, election.getTotalVotes());
             broadcastTown(town, "winner.announce-town",
@@ -509,6 +518,30 @@ public class ElectionManager {
                     "town", town.getName(),
                     "votes", String.valueOf(tally.getOrDefault(c.getUuid(), 0))));
         }
+    }
+
+    private PartyStanding leadingParty(Election election, Map<UUID, Integer> tally) {
+        Map<String, Integer> partyVotes = new HashMap<>();
+        for (Candidate candidate : election.getCandidateList()) {
+            String party = candidate.getPartyName();
+            if (party == null || party.isBlank()) {
+                party = config.getDefaultPartyName();
+            }
+            if (config.isHideDefaultPartyFromStandings()
+                    && party.equalsIgnoreCase(config.getDefaultPartyName())) {
+                continue;
+            }
+            partyVotes.merge(party, tally.getOrDefault(candidate.getUuid(), 0), Integer::sum);
+        }
+        return partyVotes.entrySet().stream()
+                .sorted(Map.Entry.<String, Integer>comparingByValue(Comparator.reverseOrder())
+                        .thenComparing(Map.Entry.comparingByKey(String.CASE_INSENSITIVE_ORDER)))
+                .map(entry -> new PartyStanding(entry.getKey(), entry.getValue()))
+                .findFirst()
+                .orElse(null);
+    }
+
+    private record PartyStanding(String name, int votes) {
     }
 
     /** Grant the winner their configured Towny ranks / mayorship and run commands. */

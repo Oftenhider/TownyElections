@@ -79,6 +79,7 @@ results:
   winner: "&a&lWinner: &f{winner} &8[{party}]&a with &e{votes}&a vote(s)!"
   no-winner: "&cNo winner was declared."
   total-votes: "&7Total votes cast: &f{total}"
+  leading-party: "&6Leading party: &f{party}&6 with &e{votes}&6 vote(s)."
   turnout: "&7Turnout: &f{voters}&7/&f{residents} &7residents (&f{percent}%&7)"
   none-recorded: "&cNo previous election results are recorded for this town."
   tie-runoff: "&6A tie occurred. A runoff has begun between: &f{candidates}"
