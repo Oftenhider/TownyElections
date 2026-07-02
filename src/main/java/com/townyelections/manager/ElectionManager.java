@@ -238,8 +238,15 @@ public class ElectionManager {
         if (wouldExceedPartyLimit(election, resident.getUUID(), trimmed)) {
             return OperationResult.fail("party.max-parties");
         }
+        String previousParty = candidate.getPartyName();
         candidate.setPartyName(trimmed);
         save();
+        if (previousParty == null || !previousParty.equalsIgnoreCase(trimmed)) {
+            broadcastTown(town, "party.joined-broadcast", MessageManager.placeholders(
+                    "player", candidate.getName(),
+                    "party", trimmed,
+                    "town", town.getName()));
+        }
         return OperationResult.ok("party.set");
     }
 
