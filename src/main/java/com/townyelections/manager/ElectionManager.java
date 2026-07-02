@@ -470,10 +470,12 @@ public class ElectionManager {
         if (winnerCandidate != null) {
             applyWinnerRewards(town, winnerCandidate, winnerVotes, election.getTotalVotes());
             broadcastTown(town, "winner.announce-town",
-                    MessageManager.placeholders("winner", winnerCandidate.getName(), "town", town.getName()));
+                    MessageManager.placeholders("winner", winnerCandidate.getName(),
+                            "party", winnerCandidate.getPartyName(), "town", town.getName()));
             if (config.isBroadcastServerWide()) {
                 Bukkit.broadcast(messages.prefixed(messages.raw("winner.announce-server")
                         .replace("{winner}", winnerCandidate.getName())
+                        .replace("{party}", winnerCandidate.getPartyName())
                         .replace("{town}", town.getName())));
             }
         } else {

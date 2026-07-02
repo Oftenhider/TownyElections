@@ -23,6 +23,8 @@ import org.jetbrains.annotations.NotNull;
 
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Comparator;
+import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.UUID;
@@ -72,6 +74,7 @@ public class ElectionCommand implements CommandExecutor, TabCompleter {
             case CommandConfig.WITHDRAW -> handleWithdraw(sender);
             case CommandConfig.CAMPAIGN -> handleCampaign(sender, rest, label);
             case CommandConfig.PARTY -> handleParty(sender, rest, label);
+            case CommandConfig.PARTIES -> handleParties(sender);
             case CommandConfig.VOTE -> handleVote(sender, rest, label);
             case CommandConfig.STATUS -> handleStatus(sender, label);
             case CommandConfig.CANDIDATES -> handleCandidates(sender, label);
@@ -297,6 +300,110 @@ public class ElectionCommand implements CommandExecutor, TabCompleter {
         }
     }
 
+    private void handleParties(CommandSender sender) {
+        if (!sender.hasPermission("townyelections.info")) {
+            messages.send(sender, "general.no-permission");
+            return;
+        }
+        PlayerContext ctx = resolveContext(sender);
+        if (ctx == null) {
+            return;
+        }
+        Election election = elections.getElection(ctx.town());
+        if (election == null) {
+            messages.send(sender, "election.none-active");
+            return;
+        }
+        printPartyList(sender, election, ctx.town().getName());
+    }
+
+    private void printPartyList(CommandSender sender, Election election, String townName) {
+        Map<String, List<String>> partyCandidates = new LinkedHashMap<>();
+        Map<String, Integer> partyVotes = new LinkedHashMap<>();
+        Map<UUID, Integer> tally = election.tally();
+
+        for (Candidate candidate : election.getCandidateList()) {
+            String party = candidate.getPartyName();
+            if (party == null || party.isBlank()) {
+                party = config.getDefaultPartyName();
+            }
+            partyCandidates.computeIfAbsent(party, ignored -> new ArrayList<>()).add(candidate.getName());
+            partyVotes.merge(party, tally.getOrDefault(candidate.getUuid(), 0), Integer::sum);
+        }
+
+        messages.sendNoPrefix(sender, "parties.header", MessageManager.placeholders("town", townName));
+        if (partyCandidates.isEmpty()) {
+            messages.sendNoPrefix(sender, "parties.none", null);
+            return;
+        }
+
+        boolean showVotes = config.isPublicLiveResults()
+                || election.getPhase() == ElectionPhase.CONCLUDED;
+        for (String party : rankedParties(partyCandidates, partyVotes, showVotes)) {
+            List<String> candidates = partyCandidates.get(party);
+            Map<String, String> placeholders = MessageManager.placeholders(
+                    "party", party,
+                    "count", String.valueOf(candidates.size()),
+                    "candidates", String.join(", ", candidates),
+                    "votes", String.valueOf(partyVotes.getOrDefault(party, 0)));
+            messages.sendNoPrefix(sender, showVotes ? "parties.entry" : "parties.entry-hidden", placeholders);
+        }
+    }
+
+    private void printResultPartyList(CommandSender sender, ElectionResult result) {
+        Map<String, List<String>> partyCandidates = new LinkedHashMap<>();
+        Map<String, Integer> partyVotes = new LinkedHashMap<>();
+
+        for (ElectionResult.Standing standing : result.getStandings()) {
+            String party = standing.partyName == null || standing.partyName.isBlank()
+                    ? config.getDefaultPartyName() : standing.partyName;
+            partyCandidates.computeIfAbsent(party, ignored -> new ArrayList<>()).add(standing.name);
+            partyVotes.merge(party, standing.votes, Integer::sum);
+        }
+
+        messages.sendNoPrefix(sender, "parties.result-header",
+                MessageManager.placeholders("town", result.getTownName()));
+        if (partyCandidates.isEmpty()) {
+            messages.sendNoPrefix(sender, "parties.none", null);
+            return;
+        }
+        for (String party : rankedParties(partyCandidates, partyVotes, true)) {
+            List<String> candidates = partyCandidates.get(party);
+            messages.sendNoPrefix(sender, "parties.entry", MessageManager.placeholders(
+                    "party", party,
+                    "count", String.valueOf(candidates.size()),
+                    "candidates", String.join(", ", candidates),
+                    "votes", String.valueOf(partyVotes.getOrDefault(party, 0))));
+        }
+    }
+
+    private List<String> rankedParties(Map<String, List<String>> partyCandidates,
+                                       Map<String, Integer> partyVotes, boolean rankByVotes) {
+        List<String> parties = new ArrayList<>(partyCandidates.keySet());
+        if (rankByVotes) {
+            parties.sort(Comparator.comparingInt((String party) -> partyVotes.getOrDefault(party, 0))
+                    .reversed()
+                    .thenComparing(String.CASE_INSENSITIVE_ORDER));
+        } else {
+            parties.sort(String.CASE_INSENSITIVE_ORDER);
+        }
+        return parties;
+    }
+
+    private List<String> currentPartyNames(Election election) {
+        Map<String, List<String>> parties = new LinkedHashMap<>();
+        for (Candidate candidate : election.getCandidateList()) {
+            String party = candidate.getPartyName();
+            if (party == null || party.isBlank()) {
+                party = config.getDefaultPartyName();
+            }
+            parties.putIfAbsent(party, List.of());
+        }
+        List<String> names = new ArrayList<>(parties.keySet());
+        names.sort(String.CASE_INSENSITIVE_ORDER);
+        return names;
+    }
+
     private void handleResults(CommandSender sender) {
         if (!sender.hasPermission("townyelections.info")) {
             messages.send(sender, "general.no-permission");
@@ -326,6 +433,8 @@ public class ElectionCommand implements CommandExecutor, TabCompleter {
                     "votes", String.valueOf(standing.votes),
                     "percent", String.valueOf(percent)));
         }
+
+        printResultPartyList(sender, result);
 
         if (result.hasWinner()) {
             String winnerParty = result.getStandings().stream()
@@ -411,6 +520,7 @@ public class ElectionCommand implements CommandExecutor, TabCompleter {
                 "withdraw", commands.literal(CommandConfig.WITHDRAW),
                 "campaign", commands.literal(CommandConfig.CAMPAIGN),
                 "party", commands.literal(CommandConfig.PARTY),
+                "parties", commands.literal(CommandConfig.PARTIES),
                 "vote", commands.literal(CommandConfig.VOTE),
                 "status", commands.literal(CommandConfig.STATUS),
                 "candidates", commands.literal(CommandConfig.CANDIDATES),
@@ -425,6 +535,7 @@ public class ElectionCommand implements CommandExecutor, TabCompleter {
         messages.sendNoPrefix(sender, "help.withdraw", base);
         messages.sendNoPrefix(sender, "help.campaign", base);
         messages.sendNoPrefix(sender, "help.party", base);
+        messages.sendNoPrefix(sender, "help.parties", base);
         messages.sendNoPrefix(sender, "help.vote", base);
         messages.sendNoPrefix(sender, "help.status", base);
         messages.sendNoPrefix(sender, "help.candidates", base);
@@ -458,14 +569,14 @@ public class ElectionCommand implements CommandExecutor, TabCompleter {
             return out;
         }
 
-        if (args.length == 2) {
+        if (args.length >= 2) {
             String action = commands.actionFor(args[0]);
             if (action == null) {
                 return out;
             }
-            String partial = args[1].toLowerCase();
+            String partial = args[args.length - 1].toLowerCase();
             // Suggest candidate names for voting.
-            if (CommandConfig.VOTE.equals(action) && sender instanceof Player player) {
+            if (args.length == 2 && CommandConfig.VOTE.equals(action) && sender instanceof Player player) {
                 Town town = towny.getPlayerTown(player);
                 Election election = elections.getElection(town);
                 if (election != null) {
@@ -476,8 +587,21 @@ public class ElectionCommand implements CommandExecutor, TabCompleter {
                     }
                 }
             }
+            // Suggest existing party names when choosing an affiliation.
+            if (CommandConfig.PARTY.equals(action) && sender instanceof Player player) {
+                Town town = towny.getPlayerTown(player);
+                Election election = elections.getElection(town);
+                if (election != null) {
+                    String partyInput = String.join(" ", Arrays.copyOfRange(args, 1, args.length)).toLowerCase();
+                    for (String party : currentPartyNames(election)) {
+                        if (party.toLowerCase().startsWith(partyInput)) {
+                            out.add(party);
+                        }
+                    }
+                }
+            }
             // Suggest town names for admin commands.
-            if (isAdminAction(action) && sender.hasPermission("townyelections.admin")) {
+            if (args.length == 2 && isAdminAction(action) && sender.hasPermission("townyelections.admin")) {
                 for (Town town : com.palmergames.bukkit.towny.TownyUniverse.getInstance().getTowns()) {
                     if (town.getName().toLowerCase().startsWith(partial)) {
                         out.add(town.getName());

@@ -21,8 +21,9 @@ Towny town ranks (plot management, etc.) and/or mayorship you configure.
 - **Structured election lifecycle** — Nomination → Voting → (optional Runoff) → Concluded.
 - **Candidacy** — residents register with `/election run` and set a custom campaign
   message shown to voters.
-- **Political parties** — candidates can choose a configurable party label shown
-  in candidate lists, final results, and PlaceholderAPI output.
+- **Political parties** — candidates can organize under configurable party labels,
+  voters can inspect party standings with `/election parties`, and results include
+  party-level vote totals alongside individual winners.
 - **Voting** — one command to cast (and optionally change) a vote, with eligibility
   restricted to town residents. Supports secret ballots (hidden tallies).
 - **Automatic winner rewards** — grants configurable Towny **town ranks**, optionally
@@ -79,7 +80,8 @@ literal below is **configurable** in `config.yml` under the `commands:` section.
 | `/election run`                 | `townyelections.candidate`| Stand as a candidate.                |
 | `/election withdraw`            | `townyelections.candidate`| Withdraw from the race.              |
 | `/election campaign <message>`  | `townyelections.candidate`| Set your campaign message.           |
-| `/election party <name>`       | `townyelections.candidate`| Set your political party.            |
+| `/election party <name>`       | `townyelections.candidate`| Join or create a political party.    |
+| `/election parties`            | `townyelections.info`     | List current parties and standings.  |
 | `/election vote <candidate>`    | `townyelections.vote`     | Cast (or change) your vote.          |
 | `/election status`              | `townyelections.info`     | View the current election.           |
 | `/election candidates`          | `townyelections.info`     | List candidates, parties & campaigns. |
@@ -130,7 +132,7 @@ console warning. Command placeholders: `{winner}`, `{winner_uuid}`, `{town}`,
 ## Configuration highlights
 
 Durations accept friendly strings like `30s`, `10m`, `2h`, `3d`, `1w`, or
-combinations such as `1w3d12h`. Candidates can set a party with `/election party <name>`; party labels are shown in candidate lists, results, and winner command placeholders.
+combinations such as `1w3d12h`. Candidates can join an existing party or create a new party label with `/election party <name>`; tab completion suggests current parties. Party standings are available with `/election parties`, and final results include party-level vote totals plus winner command placeholders.
 
 ```yaml
 election:

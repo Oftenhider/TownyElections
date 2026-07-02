@@ -51,7 +51,14 @@ campaign:
 party:
   set: "&aYour political party has been set to &f{party}&a."
   too-long: "&cYour political party name is too long (max &e{max}&c characters)."
-  empty: "&cUsage: &f/{label} {party} <name>"
+  empty: "&cUsage: &f/{label} {party} <existing party or new name>"
+
+parties:
+  header: "&8&m-----&r &bElection Parties &8- &f{town} &8&m-----"
+  result-header: "&8&m-----&r &bParty Results &8- &f{town} &8&m-----"
+  none: "&7No candidates have registered parties yet."
+  entry: "&8 - &f{party} &8(&e{votes} votes&8, &b{count} candidate(s)&8) &7{candidates}"
+  entry-hidden: "&8 - &f{party} &8(&b{count} candidate(s)&8) &7{candidates}"
 
 vote:
   cast: "&aYou voted for &f{candidate}&a."
@@ -77,8 +84,8 @@ results:
 winner:
   made-mayor: "&a{winner} has been appointed Mayor of {town}."
   ranks-granted: "&a{winner} has been granted the rank(s): &f{ranks}&a."
-  announce-town: "&6&l{winner}&e has won the election and now leads &f{town}&e!"
-  announce-server: "&6&l{winner}&e has been elected in &f{town}&e!"
+  announce-town: "&6&l{winner}&e of &f{party}&e has won the election and now leads &f{town}&e!"
+  announce-server: "&6&l{winner}&e of &f{party}&e has been elected in &f{town}&e!"
 
 status:
   header: "&8&m-----&r &bElection Status &8- &f{town} &8&m-----"
@@ -103,7 +110,8 @@ help:
   run: "&f/{label} {run} &8- &7Stand as a candidate."
   withdraw: "&f/{label} {withdraw} &8- &7Withdraw from the race."
   campaign: "&f/{label} {campaign} <message> &8- &7Set your campaign message."
-  party: "&f/{label} {party} <name> &8- &7Set your political party."
+  party: "&f/{label} {party} <name> &8- &7Join or create a political party."
+  parties: "&f/{label} {parties} &8- &7List current parties and standings."
   vote: "&f/{label} {vote} <candidate> &8- &7Cast your vote."
   status: "&f/{label} {status} &8- &7View the current election."
   candidates: "&f/{label} {candidates} &8- &7List candidates."
