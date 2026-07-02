@@ -38,7 +38,7 @@ Towny town ranks (plot management, etc.) and/or mayorship you configure.
 
 ## Stats
 
-[![TownyElection bStats](https://bstats.org/signatures/bukkit/TownyElection.svg)](https://bstats.org/plugin/bukkit/TownyElection/32328)
+![bStats](https://bstats.org/signatures/bukkit/TownyElection.svg)
 
 ---
 
