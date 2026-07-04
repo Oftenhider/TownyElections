@@ -1,7 +1,12 @@
 # TownyElections
 
 [![Build](https://github.com/vingaming1113/TownyElections/actions/workflows/build.yml/badge.svg)](https://github.com/vingaming1113/TownyElections/actions/workflows/build.yml)
-[![bStats](https://img.shields.io/badge/bStats-TownyElection-2f8fed?logo=googleanalytics&logoColor=white)](https://bstats.org/plugin/bukkit/TownyElection/32328)
+[![Latest release](https://img.shields.io/github/v/release/vingaming1113/TownyElections?include_prereleases&label=release&logo=github)](https://github.com/vingaming1113/TownyElections/releases)
+[![Downloads](https://img.shields.io/github/downloads/vingaming1113/TownyElections/total?label=downloads&logo=github)](https://github.com/vingaming1113/TownyElections/releases)
+[![Contributors](https://img.shields.io/github/contributors/vingaming1113/TownyElections?label=contributors&logo=github)](https://github.com/vingaming1113/TownyElections/graphs/contributors)
+[![Last commit](https://img.shields.io/github/last-commit/vingaming1113/TownyElections?logo=git)](https://github.com/vingaming1113/TownyElections/commits/main)
+[![Issues](https://img.shields.io/github/issues/vingaming1113/TownyElections?logo=github)](https://github.com/vingaming1113/TownyElections/issues)
+[![bStats servers](https://img.shields.io/bstats/servers/32328?label=servers&logo=googleanalytics&logoColor=white)](https://bstats.org/plugin/bukkit/TownyElection/32328)
 [![Java 21](https://img.shields.io/badge/Java-21-f89820?logo=openjdk&logoColor=white)](https://adoptium.net/)
 [![Paper 1.21.4+](https://img.shields.io/badge/Paper-1.21.4%2B-34d399)](https://papermc.io/)
 [![Towny](https://img.shields.io/badge/Towny-required-8b5cf6)](https://github.com/TownyAdvanced/Towny)
@@ -13,6 +18,11 @@ to towns managed by the [Towny](https://github.com/TownyAdvanced/Towny) plugin.
 Residents run for office, publish a campaign message, and their fellow townsfolk
 vote. When the election concludes, the winner is automatically granted the
 Towny town ranks (plot management, etc.) and/or mayorship you configure.
+
+**Links:** [Releases](https://github.com/vingaming1113/TownyElections/releases)
+| [Issues](https://github.com/vingaming1113/TownyElections/issues)
+| [bStats](https://bstats.org/plugin/bukkit/TownyElection/32328)
+| [Towny](https://github.com/TownyAdvanced/Towny)
 
 ---
 
@@ -46,7 +56,21 @@ Towny town ranks (plot management, etc.) and/or mayorship you configure.
 
 ---
 
-## Stats
+## Project stats
+
+These images update automatically from GitHub and bStats.
+
+<p align="center">
+  <a href="https://github.com/vingaming1113/TownyElections/graphs/contributors">
+    <img src="https://contrib.rocks/image?repo=vingaming1113/TownyElections&max=1000" alt="TownyElections contributors" />
+  </a>
+</p>
+
+<p align="center">
+  <a href="https://www.star-history.com/#vingaming1113/TownyElections&Date">
+    <img src="https://api.star-history.com/svg?repos=vingaming1113/TownyElections&type=Date" alt="TownyElections star history chart" />
+  </a>
+</p>
 
 ![bStats](https://bstats.org/signatures/bukkit/TownyElection.svg)
 
@@ -60,6 +84,20 @@ Towny town ranks (plot management, etc.) and/or mayorship you configure.
 | Java            | 21+                  | Yes      |
 | Towny           | 0.100.0.0+ (0.103 recommended) | Yes |
 | PlaceholderAPI  | any recent           | Optional |
+
+---
+
+## Installation
+
+1. Download the latest jar from the
+   [releases page](https://github.com/vingaming1113/TownyElections/releases).
+2. Place it in the server `plugins/` folder.
+3. Make sure [Towny](https://github.com/TownyAdvanced/Towny) is installed.
+4. Restart the server, then edit `plugins/TownyElections/config.yml`.
+5. Run `/election reload` after config or message changes.
+
+PlaceholderAPI is optional. If it is present, TownyElections registers the
+placeholders listed below.
 
 ---
 
@@ -288,6 +326,20 @@ If PlaceholderAPI is installed, these placeholders are available (identifier
 
 State is checked once per second and persisted to `data.yml`, so elections resume
 correctly across restarts.
+
+---
+
+## Contributing
+
+Bug reports, feature ideas, and pull requests are welcome. Please use the
+[issue tracker](https://github.com/vingaming1113/TownyElections/issues) and keep
+changes focused on the existing Paper/Towny workflow.
+
+Before submitting a code change, run:
+
+```bash
+mvn clean package
+```
 
 ---
 
