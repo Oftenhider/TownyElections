@@ -92,3 +92,5 @@ body:
           required: true
         - label: I searched existing issues and this is not a duplicate.
           required: true
+        - label: I am mindlessly checking boxes without reading what they say.
+          required: false
